@@ -423,6 +423,18 @@ function bindRecording() {
   lastRecordingURL = null;
 }
 
+// 检测浏览器支持的录音格式
+function getRecordMime() {
+  const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg', 'audio/wav', ''];
+  for (const t of types) {
+    if (t === '' || MediaRecorder.isTypeSupported(t)) return t;
+  }
+  return '';
+}
+
+// 用一个持久的 audio 元素播放录音（兼容性更好）
+let playbackAudio = new Audio();
+
 async function handleRec() {
   const recBtn = document.getElementById('recBtn');
   const playbackBtn = document.getElementById('playbackBtn');
@@ -432,14 +444,18 @@ async function handleRec() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     recordedChunks = [];
-    mediaRecorder = new MediaRecorder(stream);
+    const mime = getRecordMime();
+    const options = mime ? { mimeType: mime } : {};
+    mediaRecorder = new MediaRecorder(stream, options);
     mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
     mediaRecorder.onstop = () => {
       stream.getTracks().forEach(t => t.stop());
       if (recordedChunks.length > 0) {
-        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
         if (lastRecordingURL) URL.revokeObjectURL(lastRecordingURL);
         lastRecordingURL = URL.createObjectURL(blob);
+        playbackAudio.src = lastRecordingURL;
+        playbackAudio.load();
         playbackBtn.disabled = false;
       }
       recBtn.classList.remove('recording');
@@ -454,7 +470,13 @@ async function handleRec() {
 }
 
 function handlePlayback() {
-  if (lastRecordingURL) { const a = new Audio(lastRecordingURL); a.play(); }
+  if (!lastRecordingURL) return;
+  playbackAudio.currentTime = 0;
+  playbackAudio.play().catch(() => {
+    // 如果 play() 被拒绝，用新元素重试
+    const a = new Audio(lastRecordingURL);
+    a.play();
+  });
 }
 
 function handleReplay() {
