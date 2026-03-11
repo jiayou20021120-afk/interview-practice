@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>考研复试英文抽卡练习 - 邓舟扬</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0f0f1a; --card-bg: #1a1a2e; --accent: #e94560; --accent2: #0f3460;
+    --gold: #f0c040; --text: #eee; --text-dim: #999; --green: #2ecc71;
+  }
+  body { font-family: 'Inter', 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--dur) ease-in-out infinite alternate; }
+  @keyframes twinkle { from { opacity: 0.2; } to { opacity: 1; } }
+  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+  h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, var(--gold), #ff6b6b, var(--gold)); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s ease-in-out infinite; margin-bottom: 6px; text-align: center; }
+  @keyframes shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 30px; text-align: center; }
+  .stats { display: flex; gap: 24px; margin-bottom: 28px; background: rgba(255,255,255,0.04); border-radius: 16px; padding: 12px 28px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.06); }
+  .stat { text-align: center; }
+  .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .draw-btn { position: relative; padding: 16px 48px; font-size: 1.1rem; font-weight: 600; background: linear-gradient(135deg, var(--accent), #c0392b); color: white; border: none; border-radius: 50px; cursor: pointer; letter-spacing: 1px; box-shadow: 0 4px 25px rgba(233,69,96,0.4); transition: all 0.3s ease; margin-bottom: 30px; overflow: hidden; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
+  .draw-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 35px rgba(233,69,96,0.6); }
+  .draw-btn:active { transform: scale(0.97); }
+  .draw-btn::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(transparent, rgba(255,255,255,0.15), transparent); transform: rotate(45deg); animation: btn-shine 3s ease-in-out infinite; pointer-events: none; }
+  @keyframes btn-shine { 0%,100% { transform: rotate(45deg) translateY(100%); } 50% { transform: rotate(45deg) translateY(-100%); } }
+  .draw-btn.drawing { pointer-events: none; }
+  .play-btn, .stop-btn, .history-tag, .deck, .mode-btn, .next-btn, .rec-btn, .replay-btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
+  .card-area { width: 100%; perspective: 1200px; display: flex; justify-content: center; min-height: 420px; }
+  .deck { position: relative; width: 300px; height: 400px; cursor: pointer; }
+  .deck-card { position: absolute; width: 100%; height: 100%; background: linear-gradient(145deg, #16213e, #0f3460); border-radius: 16px; border: 2px solid rgba(240,192,64,0.3); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transition: all 0.3s; }
+  .deck-card::before { content: '?'; font-size: 5rem; font-weight: 700; color: var(--gold); opacity: 0.6; }
+  .deck-card:nth-child(1) { top: 0; left: 0; } .deck-card:nth-child(2) { top: 4px; left: 4px; } .deck-card:nth-child(3) { top: 8px; left: 8px; }
+  .deck:hover .deck-card:nth-child(1) { transform: rotate(-3deg) translateY(-5px); }
+  .deck:hover .deck-card:nth-child(3) { transform: rotate(3deg) translateY(-5px); }
+  .card { width: 100%; max-width: 780px; background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 20px; border: 2px solid rgba(240,192,64,0.25); box-shadow: 0 12px 48px rgba(0,0,0,0.6); padding: 32px; animation: cardReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); display: none; }
+  .card.show { display: block; }
+  @keyframes cardReveal { from { opacity: 0; transform: rotateY(90deg) scale(0.6); } to { opacity: 1; transform: rotateY(0) scale(1); } }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .card-number { background: linear-gradient(135deg, var(--accent), #c0392b); color: white; font-weight: 700; font-size: 0.85rem; padding: 5px 14px; border-radius: 20px; }
+  .card-rarity { font-size: 0.8rem; display: flex; align-items: center; gap: 4px; }
+  .question-text { font-size: 1.25rem; font-weight: 600; color: var(--gold); margin-bottom: 20px; line-height: 1.6; }
+  .answer-section { margin-bottom: 16px; }
+  .section-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, var(--accent), transparent); }
+  .answer-en { font-size: 0.95rem; line-height: 1.85; color: #ddd; background: rgba(255,255,255,0.03); border-radius: 12px; padding: 18px; border-left: 3px solid var(--accent); margin-bottom: 16px; }
+  .answer-cn { font-size: 0.88rem; line-height: 1.85; color: #aaa; background: rgba(255,255,255,0.02); border-radius: 12px; padding: 18px; border-left: 3px solid var(--accent2); font-family: 'Noto Sans SC', sans-serif; }
+  .sentence { transition: all 0.3s ease; border-radius: 4px; padding: 1px 3px; margin: 0 -3px; }
+  .sentence.reading { background: rgba(233,69,96,0.2); color: #fff; box-shadow: 0 0 8px rgba(233,69,96,0.15); }
+  .sentence.done { color: rgba(255,255,255,0.45); }
+  .mode-toggle { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .mode-btn { padding: 6px 14px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: var(--text-dim); cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.3s; }
+  .mode-btn.active { background: rgba(233,69,96,0.2); border-color: var(--accent); color: var(--accent); }
+  .audio-controls { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .play-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 30px; border: none; cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.3s ease; font-family: inherit; }
+  .play-btn.question-play { background: linear-gradient(135deg, var(--gold), #d4a020); color: #1a1a2e; }
+  .play-btn.answer-play { background: linear-gradient(135deg, var(--accent), #c0392b); color: white; }
+  .play-btn:active { transform: scale(0.96); }
+  .play-btn.playing { animation: pulse-glow 1s ease-in-out infinite; }
+  @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(233,69,96,0.4); } 50% { box-shadow: 0 0 0 10px rgba(233,69,96,0); } }
+  .play-btn svg { width: 18px; height: 18px; }
+  .stop-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--text-dim); cursor: pointer; font-size: 0.85rem; font-family: inherit; transition: all 0.3s; }
+  .speed-control, .pause-control { display: flex; align-items: center; gap: 8px; color: var(--text-dim); font-size: 0.82rem; }
+  .speed-control { margin-left: auto; }
+  .speed-control input, .pause-control input { width: 70px; accent-color: var(--accent); }
+
+  /* 跟读控制面板 */
+  .follow-panel { display: none; align-items: center; justify-content: center; gap: 10px; margin: 16px 0; padding: 14px 20px; background: rgba(255,255,255,0.04); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
+  .follow-panel.show { display: flex; }
+  .follow-panel .label { font-size: 0.82rem; color: var(--gold); width: 100%; text-align: center; margin-bottom: 6px; }
+  .next-btn { padding: 10px 28px; border-radius: 30px; border: none; background: linear-gradient(135deg, var(--green), #27ae60); color: white; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.3s; }
+  .next-btn:active { transform: scale(0.96); }
+  .replay-btn { padding: 8px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--text-dim); cursor: pointer; font-size: 0.82rem; font-family: inherit; transition: all 0.3s; }
+  .replay-btn:active { transform: scale(0.96); }
+
+  /* 录音按钮 */
+  .rec-btn { padding: 10px 22px; border-radius: 30px; border: 2px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; font-size: 0.85rem; font-weight: 600; font-family: inherit; transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px; }
+  .rec-btn.recording { background: var(--accent); color: white; animation: rec-pulse 1s ease-in-out infinite; }
+  @keyframes rec-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(233,69,96,0.5); } 50% { box-shadow: 0 0 0 8px rgba(233,69,96,0); } }
+  .rec-dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+  .playback-btn { padding: 8px 18px; border-radius: 30px; border: 1px solid rgba(78,205,196,0.5); background: rgba(78,205,196,0.1); color: #4ecdc4; cursor: pointer; font-size: 0.82rem; font-family: inherit; transition: all 0.3s; }
+  .playback-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .progress-bar { width: 100%; margin-top: 24px; }
+  .progress-track { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--gold)); border-radius: 3px; transition: width 0.5s; }
+  .progress-text { text-align: center; margin-top: 8px; font-size: 0.8rem; color: var(--text-dim); }
+  .history { margin-top: 36px; width: 100%; }
+  .history-title { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px; text-align: center; }
+  .history-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .history-tag { padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; cursor: pointer; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-dim); transition: all 0.3s; }
+  .history-tag.active { background: rgba(233,69,96,0.2); border-color: var(--accent); color: var(--accent); }
+  .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+  .particle { position: absolute; border-radius: 50%; animation: particle-fly 1s ease-out forwards; }
+  @keyframes particle-fly { from { opacity: 1; transform: translate(0, 0) scale(1); } to { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
+  /* 句间进度指示 */
+  .sentence-progress { font-size: 0.78rem; color: var(--text-dim); text-align: center; margin-top: 4px; }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.3rem; } .card { padding: 22px 18px; } .question-text { font-size: 1.05rem; }
+    .answer-en, .answer-cn { font-size: 0.85rem; padding: 14px; } .stats { gap: 16px; padding: 10px 18px; }
+    .deck { width: 240px; height: 320px; } .speed-control { margin-left: 0; margin-top: 6px; width: 100%; justify-content: center; }
+    .follow-panel { gap: 8px; padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="particles" id="particles"></div>
+<div class="container">
+  <h1>考研复试英文抽卡练习</h1>
+  <p class="subtitle">邓舟扬 | 南京大学出版专硕 · 点击抽卡开始练习</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="totalCount">11</div><div class="stat-label">总题数</div></div>
+    <div class="stat"><div class="stat-num" id="drawnCount">0</div><div class="stat-label">已抽取</div></div>
+    <div class="stat"><div class="stat-num" id="remainCount">11</div><div class="stat-label">剩余</div></div>
+  </div>
+  <button class="draw-btn" id="drawBtn">✨ 抽取题目</button>
+  <div class="card-area">
+    <div class="deck" id="deck"><div class="deck-card"></div><div class="deck-card"></div><div class="deck-card"></div></div>
+    <div class="card" id="card"></div>
+  </div>
+  <div class="history" id="historySection" style="display:none;">
+    <div class="history-title">已抽取的题目（点击可回顾）</div>
+    <div class="history-tags" id="historyTags"></div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">进度：0 / 11</div>
+  </div>
+</div>
+
+<script>
+const TOTAL = 11;
+const questions = [
+  {
+    id: 0,
+    title: "Self-Introduction (自我介绍)",
+    en: `Good morning, distinguished professors. My name is Deng Zhouyang, and I'm an undergraduate from Zhejiang University of Media and Communications, majoring in Editing and Publishing. It's a great honor to interview for the Master's program in Publishing at Nanjing University. Today, I'd like to briefly introduce myself in three parts: academics, research, and future plans. Academically, I have ranked second in my major, with comprehensive evaluation ranking first throughout my undergraduate studies. I received the National Scholarship and the Zhejiang Provincial Government Scholarship three times. I also have a CET-6 score of 527, which allows me to read English literature and participate in international research projects. For research, I independently published a paper titled "Urban Book Fairs and Youth Cultural Resonance in the Digital Era" in Publishing and Printing, with nearly 5,000 downloads. I joined an SCI Q2 project on media governance of biometric information dissemination, contributing to data analysis and manuscript revision, and the paper was published in Scientific Reports. I also designed a utility patent for a scanning device in digital publishing, focusing on ancient book digitization. In practice, I worked as an Account Executive at WPP, supporting integrated communication projects for Geely's new car launch, and I also gained experience in journalism and content operations at local media organizations. If admitted, I hope to build a solid foundation through core courses in my first year, deepen my research on youth reading culture and publishing innovation in my second year, and complete a high-quality thesis in my third year. I know I still have much to learn, but I'm truly passionate about publishing studies and determined to keep exploring. Thank you for your time and consideration.`,
+    cn: `各位教授早上好。我叫邓舟扬，来自浙江传媒学院编辑出版学专业。非常荣幸参加南京大学出版专硕的面试。今天我想从学业、科研和未来规划三个方面简要介绍自己。学业方面，我专业排名第二，综合测评排名第一，获得国家奖学金和浙江省政府奖学金三次，CET-6成绩527分。科研方面，我独立在《出版与印刷》发表论文，下载近5000次；参与SCI Q2项目；设计了古籍数字化扫描装置实用新型专利。实践方面，我在WPP担任客户执行，支持吉利新车上市项目，也在地方媒体获得新闻和内容运营经验。如果被录取，我希望第一年夯实基础，第二年深入研究青年阅读文化与出版创新，第三年完成高质量毕业论文。我知道自己还有很多要学，但我对出版学充满热情，决心不断探索。谢谢各位老师。`,
+    rarity: "UR"
+  },
+  { id: 1, title: "What are your strengths?",
+    en: `One of my main strengths is my strong ability to work independently and complete tasks steadily. During my undergraduate studies, I independently published a CSSCI paper as the sole author — from selecting the topic, collecting data on Xiaohongshu platform, to conducting content analysis and writing. I managed the entire process on my own, which shows my self-discipline and execution ability.\n\nAnother strength is my ability to think carefully before taking action. For example, my CSSCI paper started from a genuine observation — why do offline book fairs still attract young people in the digital age? I analyzed the reasons systematically using content analysis method, rather than responding emotionally. This analytical mindset helps me adjust my learning and research methods more effectively.`,
+    cn: `我认为自己的一个重要优点是较强的独立工作和执行能力。在本科期间，我独立以第一作者发表了一篇CSSCI论文。从选题、在小红书平台采集数据，到内容分析和论文撰写，全程都独立完成。这体现了我的自律性和执行力。\n\n另一个优点是我善于在行动前深入思考。比如我的CSSCI论文始于一个真实的观察——在数字时代，线下书展为什么仍能吸引年轻人？我采用内容分析法系统地分析了原因，而非情绪化回应。这种分析思维能让我更有效地调整学习和研究方法。`,
+    rarity: "SSR" },
+  { id: 2, title: "What are your weaknesses?",
+    en: `One weakness I am aware of is that my quantitative research skills are still limited. My CSSCI paper mainly used qualitative content analysis. Although I participated in data analysis for an SCI paper using SPSS, I still need to strengthen my training in advanced statistical methods. If admitted, I plan to systematically study quantitative research methods in my first year at Nanjing University.\n\nAnother weakness is that I sometimes set relatively high standards for myself. For instance, when writing my paper for Publishing and Printing, I went through numerous rounds of revision because I wanted every detail to be precise. This sometimes slowed me down. I am now learning to balance careful planning with efficiency.`,
+    cn: `我意识到自己的一个不足是定量研究能力尚待加强。我的CSSCI论文主要使用定性的内容分析。虽然我参与了SCI论文的SPSS数据分析，但高级统计方法仍需加强。如果被录取，我计划在南大第一年系统学习定量研究方法。\n\n另一个不足是我有时对自己要求偏高。比如为《出版与印刷》撰写论文时，因为希望每个细节都准确，我经历了多次修改，这有时会拖慢进度。我正在学习在谨慎思考和效率之间取得更好的平衡。`,
+    rarity: "SR" },
+  { id: 3, title: "Can you introduce your family to us?",
+    en: `I come from a small family, and I am an only child. My parents have always encouraged me to be independent and responsible for my own decisions. Growing up in this environment helped me develop self-discipline and autonomy, which I believe is reflected in my ability to independently complete academic research, such as publishing a CSSCI paper as the sole author during my undergraduate studies.`,
+    cn: `我来自一个较小的家庭，是一个独生女。父母一直鼓励我保持独立，并为自己的决定负责。在这样的成长环境中，我形成了较强的自律性和自主性。我认为这也体现在我独立完成学术研究的能力上，比如本科期间以独立作者身份发表CSSCI论文。`,
+    rarity: "R" },
+  { id: 4, title: "Introduce your hometown.",
+    en: `My hometown is a coastal city in Zhejiang Province, China. It is known for its beautiful natural scenery and rich maritime culture. Growing up near the sea gave me a broad perspective and a calm, practical attitude. This environment also inspired my interest in cultural studies, which eventually led me to research youth cultural engagement with events like the Shanghai Book Fair.`,
+    cn: `我的家乡是中国浙江省的一个沿海城市。它以美丽的自然风光和丰富的海洋文化著称。在海边长大让我拥有了开阔的视野和沉着踏实的性格。这种环境也激发了我对文化研究的兴趣，最终驱使我去研究青年群体与上海书展等文化活动的互动。`,
+    rarity: "R" },
+  { id: 5, title: "What is your favourite movie?",
+    en: `My favourite movie is The Shawshank Redemption. What impresses me most is its emphasis on hope and inner strength. As someone who went through a major transition — transferring from Creative Writing to Editing and Publishing — I deeply relate to the idea that persistence and patience can lead to meaningful change. This spirit also motivates me in my academic journey.`,
+    cn: `我最喜欢的电影是《肖申克的救赎》。这部电影最令我印象深刻的是它对希望和内在力量的强调。作为一个经历了重大转变的人——从创意写作转到编辑出版学——我深深认同坚持和耐心能带来有意义的改变。这种精神也激励着我的学术之路。`,
+    rarity: "SR" },
+  { id: 6, title: "What is your favourite book?",
+    en: `My favourite book is Thinking, Fast and Slow by Daniel Kahneman. The book introduces different ways people think and make decisions, distinguishing between intuitive and deliberate thinking. As a student in Editing and Publishing who conducts research on youth reading behavior, this book helped me become more aware of how cognitive patterns influence both my own research approach and readers' engagement with content. It deepened my understanding of audience analysis in publishing.`,
+    cn: `我最喜欢的一本书是卡尼曼的《思考，快与慢》。该书介绍了人们思考和决策时的不同方式，区分了直觉思维和审慎思维。作为一名研究青年阅读行为的编辑出版学学生，卡尼曼让我更加意识到认知模式如何影响我的研究方法和读者对内容的参与方式，加深了我对出版领域受众分析的理解。`,
+    rarity: "SR" },
+  { id: 7, title: "Greatest strength in a team setting?",
+    en: `In a team setting, my greatest strength is strong execution and coordination ability. As the Deputy Secretary of the Youth League Committee at our college, I organized over 10 large-scale events and coordinated work among team members. I focus on breaking down tasks into clear steps and making sure everyone understands their roles. For example, during my internship at WPP advertising company, I managed the full Go-To-Market process for Zeekr Z10's launch, coordinating between different departments. These experiences taught me how to keep a team moving forward efficiently.`,
+    cn: `在团队中，我最大的长处是执行力和协调能力。作为我们学院团委副书记，我组织了10多场大型活动，协调团队成员之间的工作。我习惯将任务分为清晰的步骤，确保每个人都了解自己的角色。比如在WPP广告公司实习期间，我负责了极氪Z10上市的GTM全流程，协调了不同部门之间的工作。这些经历让我学会了如何高效推动团队前进。`,
+    rarity: "SSR" },
+  { id: 8, title: "Why pursue a master's degree?",
+    en: `There are three main reasons. First, graduate school can help me develop my expertise in publishing studies and keep myself updated with the latest research findings in digital publishing. Second, I want to strengthen my quantitative research skills, which I identified as my weakness during undergraduate studies. Third, graduate school is a great place for me to think critically, accept academic challenges, and meet classmates from diverse backgrounds. My undergraduate research on youth reading culture has raised many questions that I want to explore further, and a master's program will provide the ideal environment for that.`,
+    cn: `主要有三个原因。第一，研究生可以帮助我深化出版学的专业知识，了解数字出版领域的研究动态。第二，我希望加强定量研究能力，这是我在本科阶段意识到的不足。第三，研究生院是一个批判性思考、挑战学术问题、认识不同背景同学的好地方。我本科关于青年阅读文化的研究产生了更多待探索的问题，硕士课程将提供理想的环境。`,
+    rarity: "SSR" },
+  { id: 9, title: "Talk about your undergraduate university.",
+    en: `I studied at Zhejiang University of Media and Communications, majoring in Editing and Publishing. The school management is very student-friendly, and a wide range of campus activities are available. The teachers there are well-qualified and very helpful — they adopt a teaching style of free exploration and often arrange seminars for us to broaden our knowledge. I also had the opportunity to participate in the Hangzhou Asian Games opening ceremony as a volunteer performer, which was a memorable experience. During my four years there, I achieved a GPA of 4.11/5.0, won the National Scholarship, and published academic papers. All these experiences will be valuable for years to come.`,
+    cn: `我就读于浙江传媒学院，专业是编辑出版学。学校管理以学生为本，校园活动丰富多彩。老师们很有资质，推崇自由探索的教学态度，并经常安排各种讲座来开拓我们的视野。我还有机会作为志愿者参加了杭州亚运会开幕式演出，这是一段难忘的经历。四年间我的GPA达到4.11/5.0，获得了国家奖学金，也发表了学术论文。所有这些经历都将对未来的人生宝贵。`,
+    rarity: "SR" },
+  { id: 10, title: "Plan for postgraduate study?",
+    en: `Yes, I have a clear three-year plan. In the first year, I will build a solid foundation by systematically studying core courses in digital publishing, publishing economics, and research methodology, especially strengthening my quantitative research skills. I will also read extensively in both Chinese and English literature. In the second year, I plan to conduct in-depth research under my supervisor's guidance, focusing on youth reading behavior and publishing response in the social media era — a continuation of my undergraduate research direction. I hope to publish one or two papers and gain practical experience through internships at publishing institutions. In the third year, I will complete a high-quality thesis and plan my career direction. In any case, I am determined and dedicated to making a contribution to publishing studies.`,
+    cn: `是的，我有一个明确的三年规划。第一年夯实基础，系统学习数字出版、出版经济学和研究方法等核心课程，尤其加强定量研究能力训练，并广泛阅读中英文献。第二年在导师指导下深入研究，聚焦社交媒体时代青年群体的阅读行为和出版应对策略——这是对本科研究方向的延续。争取发表1-2篇论文，并在出版机构实习。第三年完成高质量的毕业论文，规划职业方向。无论如何，我都致力于为出版学领域做出贡献。`,
+    rarity: "SSR" }
+];
+
+const rarityColors = { R: '#4fc3f7', SR: '#ba68c8', SSR: '#ffd54f', UR: '#ff6b6b' };
+const rarityStars = { R: '★★', SR: '★★★', SSR: '★★★★★', UR: '★★★★★★' };
+let drawn = [], remaining = [...Array(TOTAL).keys()];
+let speechRate = 0.78, pauseTime = 1.5, readMode = 'follow';
+let isSpeaking = false, speakAbort = false, sleepTimers = [];
+let followResolve = null; // for manual continue
+let mediaRecorder = null, recordedChunks = [], lastRecordingURL = null;
+
+// Stars
+!function() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div'); s.className = 'star';
+    const sz = Math.random() * 2 + 0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${Math.random()*3+2}s;animation-delay:${Math.random()*3}s`;
+    c.appendChild(s);
+  }
+}();
+
+function spawnParticles(x, y) {
+  const c = document.getElementById('particles');
+  const colors = ['#ffd54f','#e94560','#4fc3f7','#ba68c8','#ff8a65'];
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div'); p.className = 'particle';
+    const sz = Math.random()*8+3, a = Math.random()*Math.PI*2, d = Math.random()*150+50;
+    p.style.cssText = `width:${sz}px;height:${sz}px;left:${x}px;top:${y}px;background:${colors[Math.floor(Math.random()*colors.length)]};--tx:${Math.cos(a)*d}px;--ty:${Math.sin(a)*d}px`;
+    c.appendChild(p); setTimeout(() => p.remove(), 1000);
+  }
+}
+
+function drawCard() {
+  if (remaining.length === 0) { remaining = [...Array(TOTAL).keys()]; drawn = []; updateStats(); document.getElementById('historyTags').innerHTML = ''; }
+  const btn = document.getElementById('drawBtn');
+  btn.classList.add('drawing'); btn.textContent = '🎴 抽卡中...';
+  const ri = Math.floor(Math.random() * remaining.length);
+  const qi = remaining.splice(ri, 1)[0]; drawn.push(qi);
+  const rect = btn.getBoundingClientRect();
+  spawnParticles(rect.left + rect.width/2, rect.top + rect.height/2);
+  setTimeout(() => {
+    stopSpeech(); showCard(questions[qi]); updateStats(); addHistory(questions[qi]);
+    btn.classList.remove('drawing');
+    btn.innerHTML = remaining.length > 0 ? '✨ 继续抽卡' : '🔄 重新开始';
+    document.getElementById('deck').style.display = 'none';
+  }, 500);
+}
+
+function splitSentences(text) {
+  const raw = text.replace(/\n+/g, ' ').trim();
+  const parts = raw.match(/[^.!?]+[.!?]+[\s]*/g) || [raw];
+  return parts.map(s => s.trim()).filter(s => s.length > 0);
+}
+
+function sentenceHTML(text) {
+  return splitSentences(text).map((s, i) => `<span class="sentence" data-idx="${i}">${s}</span>`).join(' ');
+}
+
+function showCard(q) {
+  const card = document.getElementById('card');
+  card.className = 'card show';
+  const totalQ = TOTAL;
+  card.innerHTML = `
+    <div class="card-header">
+      <span class="card-number">${q.id === 0 ? '自我介绍' : 'Q' + q.id} / ${totalQ}</span>
+      <span class="card-rarity" style="color:${rarityColors[q.rarity]}">${rarityStars[q.rarity]} ${q.rarity}</span>
+    </div>
+    <div class="question-text">${q.title}</div>
+    <div class="mode-toggle">
+      <button class="mode-btn ${readMode==='follow'?'active':''}" data-mode="follow">跟读对照</button>
+      <button class="mode-btn ${readMode==='sentence'?'active':''}" data-mode="sentence">逐句自动</button>
+      <button class="mode-btn ${readMode==='full'?'active':''}" data-mode="full">连续朗读</button>
+    </div>
+    <div class="audio-controls">
+      <button class="play-btn question-play" data-qid="${q.id}">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> 播放问题
+      </button>
+      <button class="play-btn answer-play" data-qid="${q.id}">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> 播放回答
+      </button>
+      <button class="stop-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> 停止
+      </button>
+      <div class="speed-control">
+        <span>语速</span>
+        <input type="range" min="0.5" max="1.3" step="0.05" value="${speechRate}"
+          oninput="speechRate=parseFloat(this.value);this.nextElementSibling.textContent=this.value+'x'"
+          onchange="speechRate=parseFloat(this.value);this.nextElementSibling.textContent=this.value+'x'">
+        <span>${speechRate}x</span>
+      </div>
+    </div>
+    <div class="follow-panel" id="followPanel">
+      <div class="label" id="followLabel">准备跟读...</div>
+      <button class="replay-btn" id="replayBtn">重听原声</button>
+      <button class="rec-btn" id="recBtn"><span class="rec-dot"></span> 录音</button>
+      <button class="playback-btn" id="playbackBtn" disabled>播放录音</button>
+      <button class="next-btn" id="nextBtn">下一句 ▶</button>
+      <div class="sentence-progress" id="sentenceProgress"></div>
+    </div>
+    <div class="answer-section">
+      <div class="section-label">English Answer</div>
+      <div class="answer-en" id="answerEn">${sentenceHTML(q.en)}</div>
+    </div>
+    <div class="answer-section">
+      <div class="section-label">中文参考</div>
+      <div class="answer-cn">${q.cn.replace(/\n/g, '<br>')}</div>
+    </div>`;
+  card.querySelectorAll('.mode-btn').forEach(b => {
+    addTap(b, () => { readMode = b.dataset.mode; card.querySelectorAll('.mode-btn').forEach(x => x.classList.toggle('active', x.dataset.mode === readMode)); });
+  });
+}
+
+function reviewCard(qId) { stopSpeech(); showCard(questions.find(q => q.id === qId)); document.getElementById('deck').style.display = 'none'; document.querySelectorAll('.history-tag').forEach(t => t.classList.toggle('active', parseInt(t.dataset.id) === qId)); }
+
+function getBestVoice() {
+  const v = speechSynthesis.getVoices();
+  const p = [
+    x => x.lang.startsWith('en') && x.name.includes('Online'),
+    x => x.lang.startsWith('en') && x.name.includes('Neural'),
+    x => x.lang.startsWith('en') && x.name.includes('Google'),
+    x => x.lang.startsWith('en') && x.name.includes('Microsoft') && /Aria|Jenny|Guy/.test(x.name),
+    x => x.lang.startsWith('en') && x.name.includes('Samantha'),
+    x => x.lang === 'en-US',
+    x => x.lang.startsWith('en'),
+  ];
+  for (const f of p) { const r = v.find(f); if (r) return r; }
+  return null;
+}
+
+function speakOne(text, rate) {
+  return new Promise(resolve => {
+    if (speakAbort) { resolve(); return; }
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = rate; u.pitch = text.trim().endsWith('?') ? 1.08 : 1.0;
+    const v = getBestVoice(); if (v) u.voice = v;
+    u.onend = () => resolve(); u.onerror = () => resolve();
+    speechSynthesis.speak(u);
+  });
+}
+
+function sleep(ms) { return new Promise(r => { const id = setTimeout(r, ms); sleepTimers.push(id); }); }
+
+// Wait for user to click "next"
+function waitForNext() { return new Promise(r => { followResolve = r; }); }
+
+async function playAudio(type, qId) {
+  stopSpeech();
+  const q = questions.find(q => q.id === qId);
+  const btnClass = type === 'question' ? '.question-play' : '.answer-play';
+  const btn = document.querySelector(btnClass);
+  if (btn) btn.classList.add('playing');
+  isSpeaking = true; speakAbort = false;
+
+  if (type === 'question') { await speakOne(q.title, 0.95); finishSpeaking(btn); return; }
+
+  const sentences = splitSentences(q.en);
+  const els = document.querySelectorAll('#answerEn .sentence');
+  const panel = document.getElementById('followPanel');
+  const isFollow = readMode === 'follow';
+  let currentSentenceText = '';
+
+  if (isFollow) panel.classList.add('show');
+
+  for (let i = 0; i < sentences.length; i++) {
+    if (speakAbort) break;
+    // Highlight
+    els.forEach((el, idx) => { el.classList.remove('reading'); if (idx < i) el.classList.add('done'); });
+    if (els[i]) { els[i].classList.add('reading'); els[i].classList.remove('done'); els[i].scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    currentSentenceText = sentences[i];
+
+    if (isFollow) {
+      document.getElementById('followLabel').textContent = `第 ${i+1}/${sentences.length} 句 — 先听原声`;
+      document.getElementById('sentenceProgress').textContent = '';
+      document.getElementById('playbackBtn').disabled = true;
+      lastRecordingURL = null;
+    }
+
+    // Speak sentence
+    await speakOne(sentences[i], speechRate);
+    if (speakAbort) break;
+
+    if (isFollow) {
+      // Wait for user action
+      document.getElementById('followLabel').textContent = `第 ${i+1}/${sentences.length} 句 — 你的回合！录音或直接下一句`;
+      currentSentenceForReplay = sentences[i];
+      bindRecording();
+
+      // Wait for "next" click
+      await waitForNext();
+      if (speakAbort) break;
+    } else if (readMode === 'sentence' && i < sentences.length - 1) {
+      // Auto pause
+      const pauseMs = pauseTime * 1000;
+      if (panel) { panel.classList.add('show'); document.getElementById('followLabel').textContent = `跟读时间 (${pauseTime}s)...`; document.getElementById('nextBtn').style.display = 'none'; document.getElementById('recBtn').style.display = 'none'; document.getElementById('replayBtn').style.display = 'none'; document.getElementById('playbackBtn').style.display = 'none'; document.getElementById('sentenceProgress').textContent = ''; }
+      await sleep(pauseMs);
+      if (panel) panel.classList.remove('show');
+    } else if (readMode === 'full' && i < sentences.length - 1) {
+      await sleep(350);
+    }
+  }
+
+  if (!speakAbort) {
+    els.forEach(el => { el.classList.remove('reading'); el.classList.add('done'); });
+    await sleep(800);
+    els.forEach(el => el.classList.remove('done'));
+  }
+  if (panel) panel.classList.remove('show');
+  finishSpeaking(btn);
+  // Reset panel visibility
+  ['nextBtn','recBtn','replayBtn','playbackBtn'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = ''; });
+}
+
+function finishSpeaking(btn) {
+  isSpeaking = false;
+  if (btn) btn.classList.remove('playing');
+  const p = document.getElementById('followPanel'); if (p) p.classList.remove('show');
+}
+
+function stopSpeech() {
+  speakAbort = true; isSpeaking = false;
+  speechSynthesis.cancel();
+  sleepTimers.forEach(id => clearTimeout(id)); sleepTimers = [];
+  if (followResolve) { followResolve(); followResolve = null; }
+  stopRecording();
+  document.querySelectorAll('.play-btn').forEach(b => b.classList.remove('playing'));
+  document.querySelectorAll('.sentence').forEach(el => el.classList.remove('reading', 'done'));
+  const p = document.getElementById('followPanel'); if (p) p.classList.remove('show');
+}
+
+// === Recording ===
+let currentSentenceForReplay = '';
+
+function bindRecording() {
+  const recBtn = document.getElementById('recBtn');
+  recBtn.classList.remove('recording');
+  recBtn.innerHTML = '<span class="rec-dot"></span> 录音';
+  document.getElementById('playbackBtn').disabled = true;
+  lastRecordingURL = null;
+}
+
+async function handleRec() {
+  const recBtn = document.getElementById('recBtn');
+  const playbackBtn = document.getElementById('playbackBtn');
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    stopRecording(); return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      if (recordedChunks.length > 0) {
+        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        if (lastRecordingURL) URL.revokeObjectURL(lastRecordingURL);
+        lastRecordingURL = URL.createObjectURL(blob);
+        playbackBtn.disabled = false;
+      }
+      recBtn.classList.remove('recording');
+      recBtn.innerHTML = '<span class="rec-dot"></span> 重新录';
+    };
+    mediaRecorder.start();
+    recBtn.classList.add('recording');
+    recBtn.innerHTML = '<span class="rec-dot"></span> 停止录音';
+  } catch(e) {
+    document.getElementById('followLabel').textContent = '麦克风权限被拒绝 — 需要HTTPS或localhost访问才能录音';
+  }
+}
+
+function handlePlayback() {
+  if (lastRecordingURL) { const a = new Audio(lastRecordingURL); a.play(); }
+}
+
+function handleReplay() {
+  if (currentSentenceForReplay) speakOne(currentSentenceForReplay, speechRate);
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+}
+
+// === Stats ===
+function updateStats() {
+  document.getElementById('drawnCount').textContent = drawn.length;
+  document.getElementById('remainCount').textContent = remaining.length;
+  document.getElementById('progressFill').style.width = (drawn.length / TOTAL * 100) + '%';
+  document.getElementById('progressText').textContent = `进度：${drawn.length} / ${TOTAL}`;
+}
+
+function addHistory(q) {
+  document.getElementById('historySection').style.display = 'block';
+  const c = document.getElementById('historyTags');
+  c.querySelectorAll('.history-tag').forEach(t => t.classList.remove('active'));
+  const tag = document.createElement('span');
+  tag.className = 'history-tag active'; tag.dataset.id = q.id;
+  tag.textContent = q.id === 0 ? '自我介绍' : `Q${q.id}: ${q.title.substring(0, 20)}...`;
+  addTap(tag, () => reviewCard(q.id));
+  c.appendChild(tag);
+}
+
+// === Touch events ===
+function addTap(el, fn) {
+  if (!el) return;
+  let touched = false;
+  el.addEventListener('touchend', function(e) { e.preventDefault(); touched = true; fn(e); setTimeout(() => touched = false, 300); }, { passive: false });
+  el.addEventListener('click', function(e) { if (!touched) fn(e); });
+}
+addTap(document.getElementById('drawBtn'), drawCard);
+addTap(document.getElementById('deck'), drawCard);
+
+// Card event delegation - handles ALL buttons including rec/replay/playback
+function handleCardClick(e) {
+  const btn = e.target.closest('.play-btn, .stop-btn, .next-btn, .rec-btn, .replay-btn, .playback-btn');
+  if (!btn) return;
+  if (e.type === 'touchend') e.preventDefault();
+  if (btn.classList.contains('question-play')) { playAudio('question', parseInt(btn.dataset.qid)); }
+  else if (btn.classList.contains('answer-play')) { playAudio('answer', parseInt(btn.dataset.qid)); }
+  else if (btn.classList.contains('stop-btn')) { stopSpeech(); }
+  else if (btn.classList.contains('next-btn')) { stopRecording(); if (followResolve) { followResolve(); followResolve = null; } }
+  else if (btn.classList.contains('rec-btn')) { handleRec(); }
+  else if (btn.classList.contains('playback-btn')) { handlePlayback(); }
+  else if (btn.classList.contains('replay-btn')) { handleReplay(); }
+}
+document.getElementById('card').addEventListener('touchend', handleCardClick, { passive: false });
+document.getElementById('card').addEventListener('click', function(e) {
+  // Only fire click if no recent touch (prevents double-fire)
+  if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+  handleCardClick(e);
+});
+
+if (speechSynthesis.getVoices().length === 0) speechSynthesis.addEventListener('voiceschanged', () => {});
+</script>
+</body>
+</html>
