@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>考研复试英语练习 - 邓舟扬</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#0c0c18;--card:#161628;--border:rgba(255,255,255,0.07);--accent:#e94560;--gold:#f0c040;--text:#eee;--dim:#777;--green:#2ecc71;--blue:#4fc3f7}
+  body{font-family:'Inter','Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+  .app{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+  .header{text-align:center;margin-bottom:20px}
+  .header h1{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,var(--gold),#ff6b6b,var(--gold));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s ease-in-out infinite}
+  @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .subtitle{color:var(--dim);font-size:.85rem;margin-top:4px}
+  .stats{display:flex;justify-content:center;gap:28px;margin-bottom:18px;padding:10px 20px;background:rgba(255,255,255,.03);border-radius:14px;border:1px solid var(--border)}
+  .stat{text-align:center}
+  .stat-num{font-size:1.4rem;font-weight:700;color:var(--gold)}
+  .stat-label{font-size:.7rem;color:var(--dim);margin-top:2px}
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex-shrink:0;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--dim);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all .25s;white-space:nowrap}
+  .tab:hover{border-color:rgba(255,255,255,.15)}
+  .tab.active{background:rgba(233,69,96,.15);border-color:var(--accent);color:var(--accent)}
+  .ctrl-row{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+  .ctrl-btn{padding:6px 16px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--dim);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all .25s}
+  .ctrl-btn:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
+  .ctrl-btn.on{background:rgba(79,195,246,.15);border-color:var(--blue);color:var(--blue)}
+  .qcard{background:var(--card);border-radius:20px;border:1px solid var(--border);padding:28px 24px;margin-bottom:16px;animation:fadeIn .35s ease;min-height:300px}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .qcard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  .qcard-cat{font-size:.78rem;color:var(--accent);font-weight:500}
+  .qcard-idx{font-size:.75rem;color:var(--dim)}
+  .qcard-title{font-size:1.2rem;font-weight:600;color:var(--gold);line-height:1.55;margin-bottom:14px}
+  .qcard-titlecn{font-size:.88rem;color:var(--dim);margin-bottom:16px;font-family:'Noto Sans SC',sans-serif}
+  .variants{margin-bottom:18px;padding:14px 16px;background:rgba(255,255,255,.025);border-radius:12px;border:1px solid var(--border)}
+  .variants-label{font-size:.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;font-weight:600}
+  .variants ul{list-style:none;padding:0}
+  .variants li{font-size:.82rem;color:var(--dim);padding:3px 0;padding-left:14px;position:relative;line-height:1.5}
+  .variants li::before{content:'·';position:absolute;left:0;color:var(--accent)}
+  .audio-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .abtn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:24px;border:none;cursor:pointer;font-size:.82rem;font-weight:600;font-family:inherit;transition:all .25s;-webkit-tap-highlight-color:transparent}
+  .abtn:active{transform:scale(.96)}
+  .abtn.q-play{background:linear-gradient(135deg,var(--gold),#d4a020);color:#1a1a2e}
+  .abtn.a-play{background:linear-gradient(135deg,var(--accent),#c0392b);color:#fff}
+  .abtn.stop{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:var(--dim)}
+  .abtn.playing{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(233,69,96,.35)}50%{box-shadow:0 0 0 8px rgba(233,69,96,0)}}
+  .abtn svg{width:16px;height:16px}
+  .speed-ctrl{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:.78rem;margin-left:auto}
+  .speed-ctrl input{width:65px;accent-color:var(--accent)}
+  .answer-toggle{width:100%;padding:12px;border-radius:14px;border:2px dashed rgba(240,192,64,.25);background:rgba(240,192,64,.04);color:var(--gold);font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .3s;margin-bottom:16px;text-align:center}
+  .answer-toggle:hover{border-color:rgba(240,192,64,.45);background:rgba(240,192,64,.08)}
+  .answer-toggle.revealed{border-style:solid;border-color:rgba(46,204,113,.3);background:rgba(46,204,113,.05);color:var(--green)}
+  .answer-wrap{display:none;animation:fadeIn .4s ease}
+  .answer-wrap.show{display:block}
+  .section-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--accent),transparent)}
+  .answer-en{font-size:.92rem;line-height:1.85;color:#ddd;background:rgba(255,255,255,.025);border-radius:12px;padding:16px;border-left:3px solid var(--accent);margin-bottom:14px}
+  .answer-cn{font-size:.85rem;line-height:1.85;color:#999;background:rgba(255,255,255,.02);border-radius:12px;padding:16px;border-left:3px solid #0f3460;font-family:'Noto Sans SC',sans-serif;margin-bottom:14px}
+  .sentence{transition:all .3s;border-radius:3px;padding:1px 2px;margin:0 -2px}
+  .sentence.reading{background:rgba(233,69,96,.2);color:#fff}
+  .sentence.done{color:rgba(255,255,255,.4)}
+  .rec-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;background:rgba(255,255,255,.02);border-radius:12px;border:1px solid var(--border)}
+  .rec-label{font-size:.75rem;color:var(--dim);width:100%;margin-bottom:4px}
+  .rec-btn{padding:8px 18px;border-radius:20px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-size:.8rem;font-weight:600;font-family:inherit;transition:all .25s;display:inline-flex;align-items:center;gap:5px}
+  .rec-btn.recording{background:var(--accent);color:#fff;animation:recPulse 1s ease-in-out infinite}
+  @keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(233,69,96,.4)}50%{box-shadow:0 0 0 6px rgba(233,69,96,0)}}
+  .rec-dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+  .pb-btn{padding:7px 14px;border-radius:20px;border:1px solid rgba(78,205,196,.4);background:rgba(78,205,196,.08);color:#4ecdc4;cursor:pointer;font-size:.78rem;font-family:inherit;transition:all .25s}
+  .pb-btn:disabled{opacity:.3;cursor:default}
+  .nav-row{display:flex;gap:10px;justify-content:center;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+  .nav-btn{padding:10px 24px;border-radius:24px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--dim);font-size:.85rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all .25s}
+  .nav-btn:hover:not(:disabled){border-color:rgba(255,255,255,.2);color:var(--text)}
+  .nav-btn:disabled{opacity:.3;cursor:default}
+  .nav-btn.primary{background:rgba(233,69,96,.15);border-color:var(--accent);color:var(--accent)}
+  .nav-btn.practiced{background:rgba(46,204,113,.12);border-color:var(--green);color:var(--green)}
+  .progress{margin-top:8px}
+  .progress-track{width:100%;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:width .5s}
+  .progress-text{text-align:center;margin-top:6px;font-size:.75rem;color:var(--dim)}
+  .empty{text-align:center;padding:60px 20px;color:var(--dim);font-size:.95rem}
+  .shortcut-hint{text-align:center;margin-top:12px;font-size:.7rem;color:rgba(255,255,255,.2)}
+  @media(max-width:600px){
+    .app{padding:16px 12px 50px}
+    .header h1{font-size:1.3rem}
+    .qcard{padding:20px 16px}
+    .qcard-title{font-size:1.05rem}
+    .answer-en,.answer-cn{font-size:.82rem;padding:12px}
+    .stats{gap:18px;padding:8px 14px}
+    .speed-ctrl{margin-left:0;margin-top:4px;width:100%;justify-content:center}
+    .nav-btn{padding:8px 18px;font-size:.8rem}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <h1>考研复试英语练习</h1>
+    <p class="subtitle">邓舟扬 · 南京大学出版专硕</p>
+  </header>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="totalNum">23</div><div class="stat-label">总题数</div></div>
+    <div class="stat"><div class="stat-num" id="practicedNum">0</div><div class="stat-label">已练习</div></div>
+    <div class="stat"><div class="stat-num" id="remainNum">23</div><div class="stat-label">未练习</div></div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="ctrl-row">
+    <button class="ctrl-btn" id="randomBtn">🔀 随机模式</button>
+    <button class="ctrl-btn" id="resetBtn">🔄 重置进度</button>
+  </div>
+  <div id="cardArea"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">◀ 上一题</button>
+    <button class="nav-btn primary" id="markBtn">✓ 标记已练习</button>
+    <button class="nav-btn" id="nextBtn">下一题 ▶</button>
+  </div>
+  <div class="progress">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">进度: 0/23</div>
+  </div>
+  <div class="shortcut-hint">快捷键: ← → 切题 · 空格 显示答案 · M 标记已练习</div>
+</div>
+
+<script>
+const questions = [
+  {
+    id:1, cat:"intro", catName:"自我介绍",
+    title:"Please introduce yourself.",
+    titleCn:"请做一个简短的自我介绍",
+    variants:["Tell me something about yourself.","Could you give us a brief self-introduction?","May I know something about you?"],
+    en:"Good morning, distinguished professors. My name is Deng Zhouyang, and I'm an undergraduate from Zhejiang University of Media and Communications, majoring in Editing and Publishing. It's a great honor to interview for the Master's program in Publishing at Nanjing University.\n\nToday, I'd like to briefly introduce myself in three parts: academics, research, and future plans.\n\nAcademically, I have ranked second in my major, with comprehensive evaluation ranking first throughout my undergraduate studies. I received the National Scholarship and the Zhejiang Provincial Government Scholarship three times. I also have a CET-6 score of 527, which allows me to read English literature and participate in international research projects.\n\nFor research, I independently published a paper titled \"Urban Book Fairs and Youth Cultural Resonance in the Digital Era\" in Publishing and Printing, with nearly 5,000 downloads. I joined an SCI Q2 project on media governance of biometric information dissemination, contributing to data analysis and manuscript revision, and the paper was published in Scientific Reports. I also designed a utility patent for a scanning device in digital publishing, focusing on ancient book digitization.\n\nIn practice, I worked as an Account Executive at WPP, supporting integrated communication projects for Geely's new car launch, and I also gained experience in journalism and content operations at local media organizations.\n\nIf admitted, I hope to build a solid foundation through core courses in my first year, deepen my research on youth reading culture and publishing innovation in my second year, and complete a high-quality thesis in my third year. I know I still have much to learn, but I'm truly passionate about publishing studies and determined to keep exploring. Thank you for your time and consideration.",
+    cn:"各位教授早上好。我叫邓舟扬，来自浙江传媒学院编辑出版学专业。非常荣幸参加南京大学出版专硕的面试。\n\n今天我想从学业、科研和未来规划三个方面简要介绍自己。\n\n学业方面，我专业排名第二，综合测评排名第一，获得国家奖学金和浙江省政府奖学金三次，CET-6成绩527分。\n\n科研方面，我独立在《出版与印刷》发表论文，下载近5000次；参与SCI Q2项目；设计了古籍数字化扫描装置实用新型专利。\n\n实践方面，我在WPP担任客户执行，支持吉利新车上市项目，也在地方媒体获得新闻和内容运营经验。\n\n如果被录取，我希望第一年夯实基础，第二年深入研究青年阅读文化与出版创新，第三年完成高质量毕业论文。谢谢各位老师。"
+  },
+  {
+    id:2, cat:"quality", catName:"个人品质",
+    title:"What are your strengths?",
+    titleCn:"你的优点是什么？",
+    variants:["What's your greatest strength?","Can you talk about your positive traits and areas you need to improve?","What is your biggest advantage?","What kind of personality do you think you have?","How would you describe your character?","What do you think are your strong points and weak points?"],
+    en:"One of my main strengths is my strong ability to work independently and complete tasks steadily. During my undergraduate studies, I independently published a CSSCI paper as the sole author \u2014 from selecting the topic, collecting data on Xiaohongshu platform, to conducting content analysis and writing. I managed the entire process on my own, which shows my self-discipline and execution ability.\n\nAnother strength is my ability to think carefully before taking action. For example, my CSSCI paper started from a genuine observation \u2014 why do offline book fairs still attract young people in the digital age? I analyzed the reasons systematically using content analysis method, rather than responding emotionally. This analytical mindset helps me adjust my learning and research methods more effectively.",
+    cn:"我认为自己的一个重要优点是较强的独立工作和执行能力。在本科期间，我独立以第一作者发表了一篇CSSCI论文。从选题、在小红书平台采集数据，到内容分析和论文撰写，全程都独立完成。这体现了我的自律性和执行力。\n\n另一个优点是我善于在行动前深入思考。比如我的CSSCI论文始于一个真实的观察——在数字时代，线下书展为什么仍能吸引年轻人？我采用内容分析法系统地分析了原因。这种分析思维能让我更有效地调整学习和研究方法。"
+  },
+  {
+    id:3, cat:"quality", catName:"个人品质",
+    title:"What are your weaknesses?",
+    titleCn:"你的缺点是什么？",
+    variants:["What areas do you think you need to improve?","Can you talk about a weakness you've identified in yourself?","What is your biggest weakness?"],
+    en:"One weakness I am aware of is that my quantitative research skills are still limited. My CSSCI paper mainly used qualitative content analysis. Although I participated in data analysis for an SCI paper using SPSS, I still need to strengthen my training in advanced statistical methods. If admitted, I plan to systematically study quantitative research methods in my first year at Nanjing University.\n\nAnother weakness is that I sometimes set relatively high standards for myself. For instance, when writing my paper for Publishing and Printing, I went through numerous rounds of revision because I wanted every detail to be precise. This sometimes slowed me down. I am now learning to balance careful planning with efficiency.",
+    cn:"我意识到自己的一个不足是定量研究能力尚待加强。我的CSSCI论文主要使用定性的内容分析。虽然我参与了SCI论文的SPSS数据分析，但高级统计方法仍需加强。如果被录取，我计划在南大第一年系统学习定量研究方法。\n\n另一个不足是我有时对自己要求偏高。比如为《出版与印刷》撰写论文时，因为希望每个细节都准确，我经历了多次修改，这有时会拖慢进度。我正在学习在谨慎思考和效率之间取得更好的平衡。"
+  },
+  {
+    id:4, cat:"quality", catName:"个人品质",
+    title:"What is your greatest strength in a team setting?",
+    titleCn:"你在团队中的最大优势是什么？",
+    variants:["How do you work in a team?","What role do you usually play in a team?","Can you give an example of teamwork?"],
+    en:"In a team setting, my greatest strength is strong execution and coordination ability. As the Deputy Secretary of the Youth League Committee at our college, I organized over 10 large-scale events and coordinated work among team members. I focus on breaking down tasks into clear steps and making sure everyone understands their roles.\n\nFor example, during my internship at WPP advertising company, I managed the full Go-To-Market process for Zeekr Z10's launch, coordinating between different departments. These experiences taught me how to keep a team moving forward efficiently.",
+    cn:"在团队中，我最大的长处是执行力和协调能力。作为我们学院团委副书记，我组织了10多场大型活动，协调团队成员之间的工作。我习惯将任务分为清晰的步骤，确保每个人都了解自己的角色。\n\n比如在WPP广告公司实习期间，我负责了极氪Z10上市的GTM全流程，协调了不同部门之间的工作。这些经历让我学会了如何高效推动团队前进。"
+  },
+  {
+    id:5, cat:"family", catName:"家庭家乡",
+    title:"Can you introduce your family to us?",
+    titleCn:"介绍一下你的家庭",
+    variants:["Tell us about your family background.","What is your family like?"],
+    en:"I come from a small family, and I am an only child. My parents have always encouraged me to be independent and responsible for my own decisions. Growing up in this environment helped me develop self-discipline and autonomy, which I believe is reflected in my ability to independently complete academic research, such as publishing a CSSCI paper as the sole author during my undergraduate studies.",
+    cn:"我来自一个较小的家庭，是独生女。父母一直鼓励我保持独立，并为自己的决定负责。在这样的成长环境中，我形成了较强的自律性和自主性。我认为这也体现在我独立完成学术研究的能力上，比如本科期间以独立作者身份发表CSSCI论文。"
+  },
+  {
+    id:6, cat:"family", catName:"家庭家乡",
+    title:"What do your parents do? How have they influenced you?",
+    titleCn:"你父母的职业是什么？他们对你有什么影响？",
+    variants:["Can you talk about your parents' occupations and their impact on your growth?","Who has influenced you most in your life? Why?","Tell me about the person you admire most.","How did your family shape the person you are today?","What role did your parents play in your life choices?"],
+    en:"My parents have always been very supportive of my education. They are both hardworking people who taught me the value of perseverance and self-discipline. Growing up as an only child, they encouraged me to be independent and make my own decisions.\n\nMy mother always emphasized the importance of reading, which may have sparked my initial interest in publishing and literature. Their unwavering support gave me the confidence to pursue academic excellence \u2014 achieving first place in comprehensive evaluation and winning the National Scholarship. They fully support my decision to apply for a master's program at Nanjing University.",
+    cn:"我的父母一直非常支持我的教育。他们都是勤劳的人，教会了我坚持和自律的价值。作为独生女，他们鼓励我独立思考、自主决定。\n\n我母亲一直强调阅读的重要性，这可能激发了我对出版和文学的最初兴趣。他们坚定的支持给了我追求学业卓越的信心——综合测评排名第一、获得国家奖学金。他们也完全支持我申请南京大学硕士研究生的决定。"
+  },
+  {
+    id:7, cat:"family", catName:"家庭家乡",
+    title:"Introduce your hometown.",
+    titleCn:"介绍一下你的家乡",
+    variants:["Where is your hometown? Please introduce it.","Where are you from? Can you say something about it?","Can you talk about the place you grew up in? What's it like?"],
+    en:"My hometown is a coastal city in Zhejiang Province, China. It is known for its beautiful natural scenery and rich maritime culture. Growing up near the sea gave me a broad perspective and a calm, practical attitude.\n\nThis environment also inspired my interest in cultural studies, which eventually led me to research youth cultural engagement with events like the Shanghai Book Fair in my CSSCI paper.",
+    cn:"我的家乡是中国浙江省的一个沿海城市。它以美丽的自然风光和丰富的海洋文化著称。在海边长大让我拥有了开阔的视野和沉着踏实的性格。\n\n这种环境也激发了我对文化研究的兴趣，最终驱使我去研究青年群体与上海书展等文化活动的互动。"
+  },
+  {
+    id:8, cat:"family", catName:"家庭家乡",
+    title:"What are the differences between your hometown and Nanjing?",
+    titleCn:"你的家乡和南京有什么不同？",
+    variants:["What are the differences between your hometown and the city where our university is located?","How does life in your hometown differ from life in this city?","How do you feel about the change from your hometown to this city?","Is it hard for you to adapt to a new city?"],
+    en:"My hometown is a coastal city in Zhejiang with a relatively relaxed pace of life and beautiful natural scenery. Nanjing, by contrast, is one of China's most historically and culturally significant cities. As a former capital, it has a deep academic tradition and is home to many prestigious universities.\n\nThe biggest difference I expect is the richer academic atmosphere and more opportunities for scholarly exchange. I'm very much looking forward to studying in such an intellectually stimulating environment, and I believe it will broaden my perspective in publishing studies.",
+    cn:"我的家乡是浙江省的一座沿海城市，生活节奏相对悠闲，自然风景优美。相比之下，南京是中国最具历史和文化意义的城市之一。作为古都，它有着深厚的学术传统，拥有众多知名大学。\n\n我预计最大的差异是更浓厚的学术氛围和更多的学术交流机会。我非常期待在这样一个充满智慧激发的环境中学习，相信这将拓宽我在出版学领域的视野。"
+  },
+  {
+    id:9, cat:"interest", catName:"兴趣经历",
+    title:"What are your hobbies?",
+    titleCn:"你的兴趣爱好是什么？",
+    variants:["What is your hobby?","Do you have any hobbies?","What are you interested in?","Do you have any special skills?"],
+    en:"My main hobby is reading. I enjoy reading widely, from academic literature in publishing and media studies to novels and non-fiction books. This habit not only enriches my knowledge but also deepens my understanding of content creation and audience engagement, which is highly relevant to my major.\n\nBesides reading, I enjoy playing badminton in my spare time to stay active and relieve academic pressure. I also volunteered as a performer in the Hangzhou Asian Games opening ceremony, which showed me the joy of participating in large-scale cultural events.",
+    cn:"我最主要的爱好是阅读。我喜欢广泛阅读，从出版和传媒研究的学术文献到小说和非虚构类书籍。这个习惯不仅丰富了我的知识，也加深了我对内容创作和受众参与的理解，与我的专业高度相关。\n\n除了阅读，我还喜欢在课余时间打羽毛球来锻炼身体、缓解学业压力。我还曾作为志愿者参与杭州亚运会开幕式演出，让我体验了参与大型文化活动的乐趣。"
+  },
+  {
+    id:10, cat:"interest", catName:"兴趣经历",
+    title:"What is the most memorable experience in your undergraduate life?",
+    titleCn:"本科期间最难忘/最有成就感的事是什么？",
+    variants:["What impressed you most when you were at university?","Tell me about an achievement you are proud of.","What was the most meaningful experience in your undergraduate life?","Can you share a memorable moment from your college years?"],
+    en:"The most memorable experience during my undergraduate years was participating in the Hangzhou Asian Games opening ceremony as a volunteer performer. It was a once-in-a-lifetime opportunity to be part of such a significant international event.\n\nThe preparation required months of rehearsal, discipline, and teamwork with hundreds of other performers. Standing on that stage in front of a global audience was both exhilarating and humbling. This experience taught me the importance of dedication and collaboration, and it gave me confidence that I can rise to meet significant challenges.",
+    cn:"本科期间最难忘的经历是作为志愿者参与杭州亚运会开幕式演出。这是一次千载难逢的机会，能够参与如此重要的国际盛事。\n\n准备工作需要数月的排练、纪律和与数百名其他演员的团队合作。站在面向全球观众的舞台上，既令人振奋又让人谦逊。这段经历教会了我奉献和协作的重要性，也给了我信心，相信自己能够应对重大挑战。"
+  },
+  {
+    id:11, cat:"interest", catName:"兴趣经历",
+    title:"What is your favourite movie?",
+    titleCn:"你最喜欢的电影是什么？",
+    variants:["Do you have a favourite film? Why do you like it?","Is there a movie that has influenced you?"],
+    en:"My favourite movie is The Shawshank Redemption. What impresses me most is its emphasis on hope and inner strength. As someone who went through a major transition \u2014 transferring from Creative Writing to Editing and Publishing \u2014 I deeply relate to the idea that persistence and patience can lead to meaningful change. This spirit also motivates me in my academic journey.",
+    cn:"我最喜欢的电影是《肖申克的救赎》。这部电影最令我印象深刻的是它对希望和内在力量的强调。作为一个经历了重大转变的人——从创意写作转到编辑出版学——我深深认同坚持和耐心能带来有意义的改变。这种精神也激励着我的学术之路。"
+  },
+  {
+    id:12, cat:"interest", catName:"兴趣经历",
+    title:"What is your favourite book?",
+    titleCn:"你最喜欢的书是什么？",
+    variants:["Tell me about a book that has influenced you greatly.","Is there a book that shaped your thinking?","Can you introduce a book related to your field?"],
+    en:"My favourite book is Thinking, Fast and Slow by Daniel Kahneman. The book introduces different ways people think and make decisions, distinguishing between intuitive and deliberate thinking.\n\nAs a student in Editing and Publishing who conducts research on youth reading behavior, this book helped me become more aware of how cognitive patterns influence both my own research approach and readers' engagement with content. It deepened my understanding of audience analysis in publishing.",
+    cn:"我最喜欢的一本书是卡尼曼的《思考，快与慢》。该书介绍了人们思考和决策时的不同方式，区分了直觉思维和审慎思维。\n\n作为一名研究青年阅读行为的编辑出版学学生，卡尼曼让我更加意识到认知模式如何影响我的研究方法和读者对内容的参与方式，加深了我对出版领域受众分析的理解。"
+  },
+  {
+    id:13, cat:"academic", catName:"学业科研",
+    title:"Please introduce your university and major.",
+    titleCn:"介绍一下你的本科院校和专业",
+    variants:["Could you introduce your undergraduate university?","What was your undergraduate school like? How did it help you?","Tell me something about your undergraduate major.","What did you study in college?","How did your undergraduate major prepare you for further study?"],
+    en:"I studied at Zhejiang University of Media and Communications, majoring in Editing and Publishing. The school management is very student-friendly, and a wide range of campus activities are available. The teachers there are well-qualified and very helpful \u2014 they adopt a teaching style of free exploration and often arrange seminars for us to broaden our knowledge.\n\nI also had the opportunity to participate in the Hangzhou Asian Games opening ceremony as a volunteer performer, which was a memorable experience. During my four years there, I achieved a GPA of 4.11/5.0, won the National Scholarship, and published academic papers. All these experiences will be valuable for years to come.",
+    cn:"我就读于浙江传媒学院，专业是编辑出版学。学校管理以学生为本，校园活动丰富多彩。老师们很有资质，推崇自由探索的教学态度，并经常安排各种讲座来开拓我们的视野。\n\n我还有机会作为志愿者参加了杭州亚运会开幕式演出，这是一段难忘的经历。四年间我的GPA达到4.11/5.0，获得了国家奖学金，也发表了学术论文。所有这些经历都将对未来的人生宝贵。"
+  },
+  {
+    id:14, cat:"academic", catName:"学业科研",
+    title:"Can you talk about your research experience or graduation thesis?",
+    titleCn:"谈谈你的科研经历或毕业论文",
+    variants:["Have you participated in any scientific research projects or experiments as an undergraduate?","Tell me about your research experience in college.","Did you do any academic projects during your undergraduate study?","What was your graduation thesis about?"],
+    en:"During my undergraduate studies, I had multiple research experiences. First, I independently published a CSSCI paper titled \"Urban Book Fairs and Youth Cultural Resonance in the Digital Era\" in the journal Publishing and Printing. The paper examined why offline book fairs still attract young people in the digital age, using content analysis of Xiaohongshu platform data. It received nearly 5,000 downloads.\n\nI also participated in an SCI Q2 research project on media governance of biometric information dissemination, contributing to data analysis using SPSS and manuscript revision. The paper was published in Scientific Reports.\n\nFor my graduation thesis, I studied \"The Impact of Speed-Adjusted Playback on Audio Content Comprehension Among Young Adults,\" using a 2\u00d72 mixed experimental design based on Cognitive Load Theory and Levels of Processing Theory. These experiences developed my skills in both qualitative and quantitative research methods.",
+    cn:"本科期间我有多段科研经历。首先，我独立在《出版与印刷》发表了CSSCI论文，题为《数字时代城市书展与青年文化共鸣》，通过对小红书平台数据的内容分析，探讨了线下书展在数字时代为何仍能吸引年轻人，下载量近5000次。\n\n我还参与了一项关于生物特征信息传播媒介治理的SCI Q2研究项目，负责SPSS数据分析和论文修改，论文发表在Scientific Reports上。\n\n毕业论文研究了\"倍速播放对青年群体有声内容理解能力的影响\"，基于认知负荷理论和加工水平理论采用2\u00d72混合实验设计。这些经历培养了我在定性和定量研究方法方面的能力。"
+  },
+  {
+    id:15, cat:"academic", catName:"学业科研",
+    title:"What are your CET scores? How do you learn English?",
+    titleCn:"你的四六级成绩如何？英语学习方法是什么？",
+    variants:["Have you passed CET-4 and CET-6? How do you improve your English?","What is your English learning method?"],
+    en:"I passed CET-6 with a score of 527, which enables me to read English academic literature in my field. For English learning, I focus on integrating it into my daily academic work.\n\nI regularly read English papers related to publishing and media studies, which helps me build both vocabulary and professional knowledge simultaneously. I also watch English lectures and TED talks on topics I'm interested in to improve my listening skills. When preparing for this interview, I practiced speaking English every day by rehearsing self-introductions and answering common questions. I believe consistent practice is the most effective approach to language learning.",
+    cn:"我的CET-6成绩是527分，能够阅读出版和传媒领域的英文学术文献。在英语学习方面，我注重将英语融入日常学术工作。\n\n我经常阅读出版和传媒研究的英文论文，帮助我同时积累词汇和专业知识。我也会观看感兴趣话题的英文讲座和TED演讲来提高听力。在准备这次面试时，我每天练习英语口语，排练自我介绍和回答常见问题。我相信持续练习是语言学习最有效的方法。"
+  },
+  {
+    id:16, cat:"academic", catName:"学业科研",
+    title:"What books have you read for the postgraduate entrance exam?",
+    titleCn:"你为考研读了哪些专业书？",
+    variants:["Have you read any professional books during your preparation?","What's the most important book you've read for this major?","Can you introduce a book related to your applied major?"],
+    en:"During my preparation for the postgraduate entrance exam, I read several important books. The most influential one was \"Introduction to Publishing Studies\" which gave me a comprehensive understanding of the publishing industry from both theoretical and practical perspectives.\n\nI also studied research methodology textbooks to strengthen my academic foundation. Additionally, I kept up with recent academic papers on digital publishing trends and youth reading behavior, which are closely related to my research interests. These readings not only helped me prepare for the exam but also deepened my passion for the field of publishing studies.",
+    cn:"在考研准备期间，我阅读了多本重要书籍。影响最大的是《出版学导论》，让我从理论和实践两个角度全面理解了出版行业。\n\n我还学习了研究方法论教材来加强学术基础。此外，我持续关注数字出版趋势和青年阅读行为的最新学术论文，这与我的研究兴趣密切相关。这些阅读不仅帮助我准备了考试，也加深了我对出版学领域的热情。"
+  },
+  {
+    id:17, cat:"plan", catName:"读研规划",
+    title:"Why do you choose to pursue a postgraduate study?",
+    titleCn:"你为什么选择考研？",
+    variants:["Why did you decide to take the postgraduate entrance exam?","What motivates you to pursue a postgraduate degree?","Why do you want to continue your studies instead of working?"],
+    en:"There are three main reasons. First, graduate school can help me develop my expertise in publishing studies and keep myself updated with the latest research findings in digital publishing. Second, I want to strengthen my quantitative research skills, which I identified as my weakness during undergraduate studies.\n\nThird, graduate school is a great place for me to think critically, accept academic challenges, and meet classmates from diverse backgrounds. My undergraduate research on youth reading culture has raised many questions that I want to explore further, and a master's program will provide the ideal environment for that.",
+    cn:"主要有三个原因。第一，研究生可以帮助我深化出版学的专业知识，了解数字出版领域的研究动态。第二，我希望加强定量研究能力，这是我在本科阶段意识到的不足。\n\n第三，研究生院是一个批判性思考、挑战学术问题、认识不同背景同学的好地方。我本科关于青年阅读文化的研究产生了更多待探索的问题，硕士课程将提供理想的环境。"
+  },
+  {
+    id:18, cat:"plan", catName:"读研规划",
+    title:"Why do you choose this major and this university?",
+    titleCn:"你为什么选择这个专业和学校？",
+    variants:["What prompted you to choose this major?","Why did you apply for this specific program?","Can you introduce your undergraduate major? Why continue in this field?"],
+    en:"I chose to apply for the Publishing master's program at Nanjing University for several reasons. First, my undergraduate major in Editing and Publishing at Zhejiang University of Media and Communications gave me a solid foundation and genuine passion for this field. During my studies, I discovered how publishing connects content creation with audience engagement in the digital age.\n\nMy CSSCI paper on youth cultural engagement with book fairs and my thesis on audio content comprehension both reflect my deep interest in publishing research. Second, Nanjing University has one of the strongest publishing programs in China, with excellent faculty and research resources. I believe it's the ideal place for me to deepen my expertise and continue exploring publishing innovation.",
+    cn:"我选择申请南京大学出版专硕有几个原因。首先，我在浙江传媒学院编辑出版学的本科学习给了我扎实的基础和对这个领域的真正热情。在学习过程中，我发现了出版如何在数字时代连接内容创作与受众参与。\n\n我发表的关于青年文化与书展互动的CSSCI论文和关于有声内容理解的毕业论文都反映了我对出版研究的深厚兴趣。其次，南京大学拥有国内最强的出版学科之一，师资力量和科研资源优秀。我相信这是我深化专业能力、继续探索出版创新的理想场所。"
+  },
+  {
+    id:19, cat:"plan", catName:"读研规划",
+    title:"What preparations have you made for this interview?",
+    titleCn:"你为这次复试做了哪些准备？",
+    variants:["How did you get ready for our school's interview?","What have you done to prepare for this reexamination?"],
+    en:"To prepare for this interview, I took several steps. First, I thoroughly reviewed my undergraduate coursework and research experience so that I could discuss them confidently. I prepared both Chinese and English self-introductions and practiced answering common interview questions every day.\n\nSecond, I read recent academic papers and industry reports on digital publishing trends to stay updated with the latest developments in our field. Third, I maintained a positive and calm mindset, treating this interview as an opportunity to present my genuine passion for publishing studies rather than just a test. I tried to prepare the best version of myself while keeping a balanced perspective.",
+    cn:"为准备这次面试，我采取了几个步骤。首先，我全面复习了本科课程和科研经历，以便能够自信地讨论。我准备了中英文自我介绍，每天练习回答常见面试问题。\n\n其次，我阅读了最新的数字出版学术论文和行业报告，了解领域内的最新发展。第三，我保持了积极平和的心态，将面试视为展示自己对出版学真正热情的机会。我努力准备最好的自己，同时保持平衡的心态。"
+  },
+  {
+    id:20, cat:"plan", catName:"读研规划",
+    title:"What is your plan for the next three years?",
+    titleCn:"你未来三年的学习/科研计划是什么？",
+    variants:["What are your plans during your postgraduate study?","What do you hope to achieve in graduate school?","How do you plan to spend your postgraduate years?","Do you have a clear plan for your postgraduate study?"],
+    en:"Yes, I have a clear three-year plan. In the first year, I will build a solid foundation by systematically studying core courses in digital publishing, publishing economics, and research methodology, especially strengthening my quantitative research skills. I will also read extensively in both Chinese and English literature.\n\nIn the second year, I plan to conduct in-depth research under my supervisor's guidance, focusing on youth reading behavior and publishing response in the social media era \u2014 a continuation of my undergraduate research direction. I hope to publish one or two papers and gain practical experience through internships at publishing institutions.\n\nIn the third year, I will complete a high-quality thesis and plan my career direction. In any case, I am determined and dedicated to making a contribution to publishing studies.",
+    cn:"是的，我有一个明确的三年规划。第一年夯实基础，系统学习数字出版、出版经济学和研究方法等核心课程，尤其加强定量研究能力训练，并广泛阅读中英文献。\n\n第二年在导师指导下深入研究，聚焦社交媒体时代青年群体的阅读行为和出版应对策略——这是对本科研究方向的延续。争取发表1-2篇论文，并在出版机构实习。\n\n第三年完成高质量的毕业论文，规划职业方向。无论如何，我都致力于为出版学领域做出贡献。"
+  },
+  {
+    id:21, cat:"plan", catName:"读研规划",
+    title:"What will you do if you fail this exam?",
+    titleCn:"如果这次考研失败，你有什么打算？",
+    variants:["What will you do if you fail this postgraduate interview?","Do you have a backup plan in case you are not admitted?"],
+    en:"If I am not admitted this time, I will not give up on my goals. First, I will carefully reflect on my interview performance and identify areas for improvement. Then, I plan to gain practical experience in the publishing industry while continuing to strengthen my academic foundation.\n\nI may seek positions at publishing houses or media companies where I can apply my knowledge. At the same time, I will keep reading academic literature and improving my research skills. If the opportunity arises, I will apply again next year with a stronger profile. I believe that setbacks are part of the journey, and each experience makes me better prepared for the future.",
+    cn:"如果这次未被录取，我不会放弃目标。首先，我会认真反思面试表现，找出需要改进的地方。然后，我计划在出版行业积累实践经验，同时继续加强学术基础。\n\n我可能会寻找出版社或传媒公司的工作机会来应用所学知识。同时，我会继续阅读学术文献，提升研究能力。如果有机会，明年我将以更强的实力再次申请。我相信挫折是成长路上的一部分，每一次经历都让我为未来做了更好的准备。"
+  },
+  {
+    id:22, cat:"plan", catName:"读研规划",
+    title:"What is your understanding of Publishing Studies?",
+    titleCn:"谈一下你对出版学专业的理解",
+    variants:["How do you understand the major of Publishing?","Can you explain what Publishing Studies covers?","What do you know about this major?","Why are you interested in Publishing Studies?"],
+    en:"Publishing Studies is an interdisciplinary field that examines how content is created, edited, produced, distributed, and consumed. In the digital age, it has evolved significantly to encompass topics like digital publishing, social media communication, data-driven content strategies, and the transformation of reading behaviors.\n\nWhat I find most fascinating about this field is its combination of theory and practice \u2014 it requires both academic rigor and real-world awareness. My undergraduate research on youth reading culture and audio content comprehension has given me firsthand experience of how publishing research connects theoretical frameworks with practical insights. I believe this major is at the forefront of understanding how information reaches and influences audiences.",
+    cn:"出版学是一个跨学科领域，研究内容如何被创作、编辑、生产、分发和消费。在数字时代，它已经显著发展，涵盖了数字出版、社交媒体传播、数据驱动内容策略和阅读行为转变等话题。\n\n我觉得这个领域最吸引我的是理论与实践的结合——它既需要学术严谨性，也需要对现实世界的认识。我在本科期间关于青年阅读文化和有声内容理解的研究让我亲身体验了出版研究如何将理论框架与实践洞察相连接。我相信这个专业处于理解信息如何到达和影响受众的前沿。"
+  },
+  {
+    id:23, cat:"plan", catName:"读研规划",
+    title:"What's the difference between undergraduate and postgraduate study?",
+    titleCn:"本科学习和研究生学习有什么不同？",
+    variants:["How is postgraduate study different from undergraduate study?","What do you think are the main differences between bachelor's and master's degrees?","How will your learning change in graduate school?"],
+    en:"I think there are several key differences between undergraduate and postgraduate study. First, undergraduate education provides a broad foundation across multiple subjects, while postgraduate study focuses on a specific research area in much greater depth.\n\nSecond, as undergraduates, we mainly absorb knowledge from textbooks and lectures, but as graduate students, we need to critically read academic papers, identify research gaps, and think independently. Third, graduate study emphasizes conducting original research and contributing new knowledge to the field, rather than just understanding existing theories.\n\nI'm excited about this transition because it means I'll have the opportunity to explore questions that genuinely interest me and potentially make my own contribution to publishing studies.",
+    cn:"我认为本科和研究生学习有几个关键区别。首先，本科教育提供跨多个学科的广泛基础，而研究生学习则更深入地聚焦于特定研究领域。\n\n其次，本科生主要从教材和课堂上吸收知识，而研究生需要批判性地阅读学术论文、发现研究空白并独立思考。第三，研究生学习强调开展原创研究并为学科贡献新知识，而不仅仅是理解现有理论。\n\n我对这种转变感到兴奋，因为这意味着我将有机会探索自己真正感兴趣的问题，并有可能为出版学领域做出自己的贡献。"
+  }
+];
+
+const categories = [
+  {key:"all",name:"全部"},{key:"intro",name:"自我介绍"},{key:"quality",name:"个人品质"},
+  {key:"family",name:"家庭家乡"},{key:"interest",name:"兴趣经历"},{key:"academic",name:"学业科研"},{key:"plan",name:"读研规划"}
+];
+
+let currentCat = "all", filteredList = [...questions], currentIdx = 0;
+let answerVisible = false, randomMode = false;
+let practiced = new Set(JSON.parse(localStorage.getItem('dzy_practiced') || '[]'));
+let isSpeaking = false, speakAbort = false, sleepTimers = [];
+let speechRate = 0.8;
+let mediaRecorder = null, recordedChunks = [], lastRecordingURL = null;
+let playbackAudio = new Audio();
+
+function init() {
+  renderTabs(); updateFilteredList(); renderCard(); updateStats(); bindEvents();
+}
+
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = categories.map(c => {
+    const count = c.key === 'all' ? questions.length : questions.filter(q => q.cat === c.key).length;
+    return '<button class="tab '+(c.key===currentCat?'active':'')+'" data-cat="'+c.key+'">'+c.name+' ('+count+')</button>';
+  }).join('');
+}
+
+function updateFilteredList() {
+  filteredList = currentCat === 'all' ? [...questions] : questions.filter(q => q.cat === currentCat);
+  if (currentIdx >= filteredList.length) currentIdx = 0;
+}
+
+function renderCard() {
+  const area = document.getElementById('cardArea');
+  if (!filteredList.length) { area.innerHTML = '<div class="empty">该分类下暂无题目</div>'; return; }
+  const q = filteredList[currentIdx];
+  const done = practiced.has(q.id);
+  answerVisible = false;
+  area.innerHTML =
+    '<div class="qcard" id="qcard"><div class="qcard-head"><span class="qcard-cat">'+q.catName+'</span><span class="qcard-idx">'+(done?'\u2713 ':'')+'\u7b2c '+(currentIdx+1)+' \u9898 / \u5171 '+filteredList.length+' \u9898</span></div>'+
+    '<div class="qcard-title">'+q.title+'</div><div class="qcard-titlecn">'+q.titleCn+'</div>'+
+    (q.variants.length ? '<div class="variants"><div class="variants-label">Related Questions</div><ul>'+q.variants.map(function(v){return '<li>'+v+'</li>';}).join('')+'</ul></div>' : '')+
+    '<div class="audio-row"><button class="abtn q-play" data-id="'+q.id+'"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> \u64ad\u653e\u95ee\u9898</button><button class="abtn stop"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> \u505c\u6b62</button></div>'+
+    '<button class="answer-toggle" id="answerToggle">\ud83d\udc41 \u70b9\u51fb\u663e\u793a\u7b54\u6848</button>'+
+    '<div class="answer-wrap" id="answerWrap">'+
+    '<div class="audio-row" style="margin-top:4px"><button class="abtn a-play" data-id="'+q.id+'"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> \u64ad\u653e\u56de\u7b54</button><button class="abtn stop"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> \u505c\u6b62</button>'+
+    '<div class="speed-ctrl"><span>\u8bed\u901f</span><input type="range" min="0.5" max="1.3" step="0.05" value="'+speechRate+'" id="speedSlider"><span id="speedVal">'+speechRate+'x</span></div></div>'+
+    '<div class="rec-row"><div class="rec-label">\u5f55\u97f3\u7ec3\u4e60 (\u9700\u8981\u9ea6\u514b\u98ce\u6743\u9650)</div><button class="rec-btn" id="recBtn"><span class="rec-dot"></span> \u5f55\u97f3</button><button class="pb-btn" id="pbBtn" disabled>\u25b6 \u64ad\u653e\u5f55\u97f3</button></div>'+
+    '<div style="margin-top:14px"><div class="section-label">English Answer</div><div class="answer-en" id="answerEn">'+sentenceHTML(q.en)+'</div></div>'+
+    '<div><div class="section-label">\u4e2d\u6587\u53c2\u8003</div><div class="answer-cn">'+q.cn.replace(/\n/g,'<br>')+'</div></div></div></div>';
+  const mk = document.getElementById('markBtn');
+  mk.textContent = done ? '\u2713 \u5df2\u7ec3\u4e60' : '\u2713 \u6807\u8bb0\u5df2\u7ec3\u4e60';
+  mk.className = 'nav-btn ' + (done ? 'practiced' : 'primary');
+  updateNavButtons();
+}
+
+function sentenceHTML(text) {
+  return splitSentences(text).map(function(s,i){return '<span class="sentence" data-idx="'+i+'">'+s+'</span>';}).join(' ');
+}
+function splitSentences(text) {
+  var raw = text.replace(/\n+/g,' ').trim();
+  var parts = raw.match(/[^.!?]+[.!?]+[\s]*/g) || [raw];
+  return parts.map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+}
+function goNext() {
+  stopSpeech();
+  if (randomMode) { if (filteredList.length<=1) return; var n; do{n=Math.floor(Math.random()*filteredList.length);}while(n===currentIdx); currentIdx=n; }
+  else { currentIdx = currentIdx < filteredList.length-1 ? currentIdx+1 : 0; }
+  renderCard();
+}
+function goPrev() { stopSpeech(); currentIdx = currentIdx > 0 ? currentIdx-1 : filteredList.length-1; renderCard(); }
+function updateNavButtons() { document.getElementById('prevBtn').disabled = filteredList.length<=1; document.getElementById('nextBtn').disabled = filteredList.length<=1; }
+function updateStats() {
+  var t=questions.length, p=practiced.size;
+  document.getElementById('totalNum').textContent=t;
+  document.getElementById('practicedNum').textContent=p;
+  document.getElementById('remainNum').textContent=t-p;
+  document.getElementById('progressFill').style.width=(p/t*100)+'%';
+  document.getElementById('progressText').textContent='\u8fdb\u5ea6: '+p+'/'+t;
+}
+function togglePracticed() {
+  var q=filteredList[currentIdx]; if(practiced.has(q.id)) practiced.delete(q.id); else practiced.add(q.id);
+  localStorage.setItem('dzy_practiced',JSON.stringify([...practiced])); updateStats(); renderCard();
+}
+
+function getBestVoice() {
+  var v=speechSynthesis.getVoices(), p=[
+    function(x){return x.lang.startsWith('en')&&x.name.includes('Online');},
+    function(x){return x.lang.startsWith('en')&&x.name.includes('Neural');},
+    function(x){return x.lang.startsWith('en')&&x.name.includes('Google');},
+    function(x){return x.lang.startsWith('en')&&/Aria|Jenny|Guy/.test(x.name);},
+    function(x){return x.lang.startsWith('en')&&x.name.includes('Samantha');},
+    function(x){return x.lang==='en-US';},
+    function(x){return x.lang.startsWith('en');}
+  ];
+  for(var i=0;i<p.length;i++){var r=v.find(p[i]);if(r)return r;} return null;
+}
+function speakOne(text,rate){return new Promise(function(resolve){if(speakAbort){resolve();return;} var u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=rate;u.pitch=text.trim().endsWith('?')?1.08:1.0;var v=getBestVoice();if(v)u.voice=v;u.onend=function(){resolve();};u.onerror=function(){resolve();};speechSynthesis.speak(u);});}
+function sleep(ms){return new Promise(function(r){var id=setTimeout(r,ms);sleepTimers.push(id);});}
+
+async function playQuestion(qId){stopSpeech();var q=questions.find(function(x){return x.id===qId;});isSpeaking=true;speakAbort=false;var btn=document.querySelector('.q-play');if(btn)btn.classList.add('playing');await speakOne(q.title,0.9);isSpeaking=false;if(btn)btn.classList.remove('playing');}
+
+async function playAnswer(qId){
+  stopSpeech();var q=questions.find(function(x){return x.id===qId;});isSpeaking=true;speakAbort=false;
+  var btn=document.querySelector('.a-play');if(btn)btn.classList.add('playing');
+  var sentences=splitSentences(q.en),els=document.querySelectorAll('#answerEn .sentence');
+  for(var i=0;i<sentences.length;i++){
+    if(speakAbort)break;
+    els.forEach(function(el,idx){el.classList.remove('reading');if(idx<i)el.classList.add('done');});
+    if(els[i]){els[i].classList.add('reading');els[i].scrollIntoView({behavior:'smooth',block:'nearest'});}
+    await speakOne(sentences[i],speechRate);if(speakAbort)break;if(i<sentences.length-1)await sleep(400);
+  }
+  if(!speakAbort){els.forEach(function(el){el.classList.remove('reading');el.classList.add('done');});await sleep(600);els.forEach(function(el){el.classList.remove('done');});}
+  isSpeaking=false;if(btn)btn.classList.remove('playing');
+}
+
+function stopSpeech(){speakAbort=true;isSpeaking=false;speechSynthesis.cancel();sleepTimers.forEach(function(id){clearTimeout(id);});sleepTimers=[];document.querySelectorAll('.abtn').forEach(function(b){b.classList.remove('playing');});document.querySelectorAll('.sentence').forEach(function(el){el.classList.remove('reading','done');});stopRecording();}
+
+function getRecordMime(){var t=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg',''];for(var i=0;i<t.length;i++){if(t[i]===''||MediaRecorder.isTypeSupported(t[i]))return t[i];}return '';}
+
+async function handleRec(){
+  var recBtn=document.getElementById('recBtn'),pbBtn=document.getElementById('pbBtn');
+  if(mediaRecorder&&mediaRecorder.state==='recording'){stopRecording();return;}
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({audio:true});recordedChunks=[];
+    var mime=getRecordMime(),options=mime?{mimeType:mime}:{};
+    mediaRecorder=new MediaRecorder(stream,options);
+    mediaRecorder.ondataavailable=function(e){if(e.data.size>0)recordedChunks.push(e.data);};
+    mediaRecorder.onstop=function(){stream.getTracks().forEach(function(t){t.stop();});if(recordedChunks.length>0){var blob=new Blob(recordedChunks,{type:mediaRecorder.mimeType||'audio/webm'});if(lastRecordingURL)URL.revokeObjectURL(lastRecordingURL);lastRecordingURL=URL.createObjectURL(blob);playbackAudio.src=lastRecordingURL;playbackAudio.load();if(pbBtn)pbBtn.disabled=false;}if(recBtn){recBtn.classList.remove('recording');recBtn.innerHTML='<span class="rec-dot"></span> \u91cd\u65b0\u5f55';}};
+    mediaRecorder.start();recBtn.classList.add('recording');recBtn.innerHTML='<span class="rec-dot"></span> \u505c\u6b62\u5f55\u97f3';
+  }catch(e){alert('\u9ea6\u514b\u98ce\u6743\u9650\u88ab\u62d2\u7edd \u2014 \u9700\u8981HTTPS\u6216localhost\u8bbf\u95ee\u624d\u80fd\u5f55\u97f3');}
+}
+function handlePlayback(){if(!lastRecordingURL)return;playbackAudio.currentTime=0;playbackAudio.play().catch(function(){var a=new Audio(lastRecordingURL);a.play();});}
+function stopRecording(){if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();}
+
+function bindEvents(){
+  document.getElementById('tabs').addEventListener('click',function(e){var tab=e.target.closest('.tab');if(!tab)return;currentCat=tab.dataset.cat;currentIdx=0;stopSpeech();document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.cat===currentCat);});updateFilteredList();renderCard();});
+  document.getElementById('prevBtn').addEventListener('click',goPrev);
+  document.getElementById('nextBtn').addEventListener('click',goNext);
+  document.getElementById('markBtn').addEventListener('click',togglePracticed);
+  document.getElementById('randomBtn').addEventListener('click',function(){randomMode=!randomMode;this.classList.toggle('on',randomMode);this.textContent=randomMode?'\ud83d\udd00 \u968f\u673a\u6a21\u5f0f ON':'\ud83d\udd00 \u968f\u673a\u6a21\u5f0f';});
+  document.getElementById('resetBtn').addEventListener('click',function(){if(confirm('\u786e\u5b9a\u8981\u91cd\u7f6e\u6240\u6709\u7ec3\u4e60\u8fdb\u5ea6\u5417\uff1f')){practiced.clear();localStorage.removeItem('dzy_practiced');updateStats();renderCard();}});
+  document.getElementById('cardArea').addEventListener('click',function(e){
+    var target=e.target.closest('.q-play,.a-play,.stop,.answer-toggle,.rec-btn,.pb-btn');if(!target)return;
+    if(target.classList.contains('q-play'))playQuestion(parseInt(target.dataset.id));
+    else if(target.classList.contains('a-play'))playAnswer(parseInt(target.dataset.id));
+    else if(target.classList.contains('stop'))stopSpeech();
+    else if(target.classList.contains('answer-toggle')){answerVisible=!answerVisible;var wrap=document.getElementById('answerWrap'),toggle=document.getElementById('answerToggle');if(answerVisible){wrap.classList.add('show');toggle.textContent='\ud83d\udc41 \u70b9\u51fb\u9690\u85cf\u7b54\u6848';toggle.classList.add('revealed');}else{wrap.classList.remove('show');toggle.textContent='\ud83d\udc41 \u70b9\u51fb\u663e\u793a\u7b54\u6848';toggle.classList.remove('revealed');stopSpeech();}}
+    else if(target.classList.contains('rec-btn'))handleRec();
+    else if(target.classList.contains('pb-btn'))handlePlayback();
+  });
+  document.getElementById('cardArea').addEventListener('input',function(e){if(e.target.id==='speedSlider'){speechRate=parseFloat(e.target.value);var val=document.getElementById('speedVal');if(val)val.textContent=speechRate+'x';}});
+  document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='ArrowRight'||e.key==='n')goNext();else if(e.key==='ArrowLeft'||e.key==='p')goPrev();else if(e.key===' '||e.key==='Enter'){e.preventDefault();var toggle=document.getElementById('answerToggle');if(toggle)toggle.click();}else if(e.key==='m')togglePracticed();});
+}
+
+if(speechSynthesis.getVoices().length===0)speechSynthesis.addEventListener('voiceschanged',function(){});
+init();
+</script>
+</body>
+</html>
